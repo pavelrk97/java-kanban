@@ -1,30 +1,23 @@
 import java.util.Objects;
 
 public class Task {
-    private static int idCounter = 0;
-
     private String name;
     private String description;
     private Status status;
     private int id;
 
-    public Task(String name, String description, int status) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.id = ++idCounter;
-        switch (status) {
-            case 1:
-                this.status = Status.NEW;
-                break;
-            case 2:
-                this.status = Status.IN_PROGRESS;
-                break;
-            case 3:
-                this.status = Status.DONE;
-                break;
-            default:
-                this.status = Status.NEW;
-        }
+        this.id = this.hashCode();
+        this.status = Status.NEW;
+    }
+
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.id = this.hashCode();
+        this.status = status;
     }
 
     public String getName() {
@@ -47,7 +40,9 @@ public class Task {
         return id;
     }
 
-
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public int hashCode() {

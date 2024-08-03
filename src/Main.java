@@ -4,30 +4,41 @@ public class Main {
         System.out.println("Поехали!");
         TaskManager taskManager = new TaskManager();
 
-        System.out.println("Test 1: 2 tasks are created");
-        taskManager.addTask("Task 1", "new task ", 1);
-        taskManager.addTask("Task 2 ", "both are added to HashMap rapidly", 1);
+        System.out.println("  ");
+        System.out.println("2 tasks");
+        Task task1 = new Task("Do this", "fast");
+        Task task2 = new Task("Do this", "slow");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
 
-        System.out.println("Test 1: Epic is created");
-        Epic epic = new Epic("Epic 1", "created by hand, not added automatically to map", 1);
-        taskManager.epicHashMap.put(epic.getId(), epic);
+        System.out.println(" ");
+        System.out.println("1 epic + 2 subT");
+        Epic epic1 = new Epic("Epic1", "descript");
+        taskManager.addEpic(epic1);
+        SubTask subTask1 = new SubTask("SubT 1 ", "adsds");
+        SubTask subTask2 = new SubTask("Subt 2", " subr br br");
+        taskManager.addSubTaskToEpic(epic1, subTask1);
+        taskManager.addSubTaskToEpic(epic1, subTask2);
 
-        System.out.println("Test 1:Sub in epic are created");
-        taskManager.addSubtaskToEpic(epic, "Subtask 1", "also it could be an obj instead of words", 1);
-        taskManager.addSubtaskToEpic(epic, "Sub 2", "Push push", 2);
+        System.out.println("  ");
+        System.out.println("PrintAll");
+        System.out.println("Tasks are: " + taskManager.fullListTasks());
+        System.out.println("Epics here: " + taskManager.fullListEpics());
+        System.out.println("SubT for epic1 are: " + taskManager.fullListSubTasks(epic1));
 
-        System.out.println("Test 2: printing all");
-        taskManager.printAllTasks();
-        taskManager.printAllEpics();
-        taskManager.printSubtasksInEpic(epic);
+        System.out.println("  ");
+        System.out.println("Status swing");
+        System.out.println(epic1);
+        System.out.println("Создаем новую подзадачу со статусом в progress и заменяем ей старую");
+        SubTask subTaskSwing = new SubTask("Changed", "Status for Epic", Status.IN_PROGRESS);
+        taskManager.updateSubTaskToEpic(epic1, subTask2, subTaskSwing);
+        System.out.println(epic1);
 
-        System.out.println("SubT status changing by id");
-        System.out.println(epic);
-        taskManager.updateSubtaskToEpic(epic, 5, "Changed to NEW", "Placeholder", 1);
-        System.out.println(epic);
-
-        System.out.println("удаление");
-        taskManager.printById(5);
-        System.out.println(epic);
+        System.out.println(" ");
+        System.out.println("Delete subtusk + status check");
+        System.out.println(taskManager.getEpicHashMap());
+        System.out.println(taskManager.fullListSubTasks(epic1));
+        taskManager.deleteById(-1615900613);
+        System.out.println(taskManager.getEpicHashMap());
     }
 }
