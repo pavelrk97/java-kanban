@@ -1,2 +1,1 @@
-# java-kanban
-Repository for homework project.
+5 спринт покрыт тестами
