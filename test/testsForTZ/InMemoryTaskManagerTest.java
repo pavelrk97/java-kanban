@@ -187,6 +187,40 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(taskIdeal2, taskManager.getHistory().get(1));
         Assertions.assertEquals(taskIdeal, taskManager.getHistory().get(0));
     }
+
+    @Test
+    void subNotAddedToEpicWithSameId() {
+        // prepare
+        Epic epic = new Epic("Wasd", "Wasd");
+        Subtask subtask = new Subtask("for epic", "for", Status.DONE, 1);
+        Subtask subChangeEpic = new Subtask("exp", "experiment", Status.NEW, 1);
+
+        // do
+        taskManager.createEpic(epic);  // epicId = 1
+        taskManager.createSubtask(subtask); // subtaskId = 1, has epicId = 1
+
+        subChangeEpic.setId(1);
+        taskManager.createSubtask(subChangeEpic); // сабтаск не стал эпиком
+
+        // check
+        String epicName = epic.getName();
+        String epicDes = epic.getDescription();
+
+        Epic epicFromList = taskManager.getEpicById(1);
+        String epicFromName = epicFromList.getName();
+        String epicFromDes = epicFromList.getDescription();
+
+        boolean isEpicNameEqual = epicName.equals(epicFromName);
+        boolean isEpicDesEqual = epicDes.equals(epicFromDes);
+
+        if (isEpicNameEqual && isEpicDesEqual) {
+            System.out.println("Эпик из списка равен эпику эталонному, наложение не произошло,\n" +
+                    "изменился id второго саба и он добавился в эпик, а не стал эпиком");
+        }
+
+        System.out.println(taskManager.getAllEpics());
+        System.out.println(taskManager.getAllSubtasks());
+    }
 }
 
 
