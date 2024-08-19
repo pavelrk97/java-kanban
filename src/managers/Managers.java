@@ -1,4 +1,4 @@
-package allInOne;
+package managers;
 
 public class Managers {
     public static InMemoryHistoryManager getDefaultHistory() {

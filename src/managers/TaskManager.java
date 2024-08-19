@@ -1,4 +1,4 @@
-package allInOne;
+package managers;
 
 import model.Epic;
 import model.Subtask;
@@ -8,11 +8,6 @@ import status.Status;
 import java.util.List;
 
 public interface TaskManager {
-    int generateTaskId();
-
-    int generateEpicId();
-
-    int generateSubtaskId();
 
     // Получение списка всех задач
     List<Task> getAllTasks();
@@ -57,9 +52,6 @@ public interface TaskManager {
     void deleteEpicById(int id);
 
     void deleteSubtaskById(int id);
-
-    // пересчёт статуса эпика
-    Status calculateStatus(Epic epic);
 
     // просмотр истории
     List<Task> getHistory();

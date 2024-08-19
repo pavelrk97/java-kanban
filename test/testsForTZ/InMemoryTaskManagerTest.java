@@ -1,4 +1,4 @@
-package allInOne;
+package testsForTZ;
 
 import model.Epic;
 import model.Subtask;
@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import status.Status;
+import managers.InMemoryHistoryManager;
+import managers.InMemoryTaskManager;
+import managers.Managers;
+import managers.TaskManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +24,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void addNewTask_ShouldSaveTask_equalsById() {
+    void addNewTaskShouldSaveTaskEqualsById() {
         // prepare
         Task task = new Task("Name", "Desct1");
         Task expectedTask = new Task("Name2", "Desct1");
@@ -36,7 +40,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateTask_shouldUpdateTaskWithSpecificatedId() {
+    void updateTaskShouldUpdateTaskWithSpecificatedId() {
         // prepare
         taskManager.createTask(new Task("Task1", "Task des"));
         Task newTask = new Task("Task2", "Updated", Status.DONE, 1);
@@ -88,7 +92,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void InMemoryTaskManager_shouldAddTask_shouldLocateById () {
+    void InMemoryTaskManagerShouldAddTaskShouldLocateById () {
         // prepare
         taskManager.createTask(new Task("Vamos", "Faster"));
 
@@ -100,7 +104,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void InMemoryTaskManager_shouldAddEpic_shouldLocateById () {
+    void InMemoryTaskManagerShouldAddEpicShouldLocateById () {
         // prepare
         taskManager.createEpic(new Epic("Vamos", "Faster"));
 
@@ -112,7 +116,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void InMemoryTaskManager_shouldAddSub_shouldLocateById () {
+    void InMemoryTaskManagerShouldAddSubShouldLocateById () {
         // prepare
         taskManager.createEpic(new Epic("Vamos", "Faster"));
         taskManager.createSubtask(new Subtask("Sub", "for epic",Status.NEW, 1));
@@ -125,7 +129,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void noConflict_whenCreatedTaskSameID() {  // не нужный тест, тк id дается при добавлении, отличный от предыдущего
+    void noConflictWhenCreatedTaskSameID() {  // не нужный тест, тк id дается при добавлении, отличный от предыдущего
         // prepare
         int lengthListShouldBe = 2;
         taskManager.createTask(new Task("First", "First")); // id = 1
@@ -141,7 +145,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void allInTask_isSame() {
+    void allInTaskIsSame() {
         // prepare
         Task idealTask = new Task("ideal", "task", Status.DONE);
 

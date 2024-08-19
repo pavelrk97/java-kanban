@@ -1,4 +1,4 @@
-package allInOne;
+package managers;
 
 import model.Epic;
 import model.Subtask;
@@ -7,13 +7,14 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import status.Status;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected HashMap<Integer, Task> tasks;
-    protected HashMap<Integer, Epic> epics;
-    protected HashMap<Integer, Subtask> subtasks;
+    protected Map<Integer, Task> tasks;
+    protected Map<Integer, Epic> epics;
+    protected Map<Integer, Subtask> subtasks;
     protected HistoryManager historyManager = Managers.getDefaultHistory(); // бращается к менеджеру истории через
     // интерфейс HistoryManager и использует реализацию, которую возвращает метод getDefaultHistory.
 
@@ -264,7 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // пересчёт статуса эпика
-    @Override
+
     public Status calculateStatus(Epic epic) {
         List<Integer> subtaskList = epic.getSubtasks();
         if (subtaskList.isEmpty()) {
