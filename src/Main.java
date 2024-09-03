@@ -9,15 +9,9 @@ import status.Status;
 public class Main {
     public static InMemoryTaskManager inMemoryTaskManager = Managers.getDefault();;
     public static void main(String[] args) {
-
-
-
-
         // Создайте две задачи
         inMemoryTaskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
         inMemoryTaskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
-
-
 
         // Создайте эпик с 3 подзадачами
         inMemoryTaskManager.createEpic(new Epic("epic with 3", "ny da"));

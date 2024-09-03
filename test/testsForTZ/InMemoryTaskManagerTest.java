@@ -12,9 +12,6 @@ import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
 
-import java.util.List;
-import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
