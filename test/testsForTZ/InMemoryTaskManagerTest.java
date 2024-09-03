@@ -12,6 +12,9 @@ import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -120,12 +123,11 @@ class InMemoryTaskManagerTest {
         // prepare
         taskManager.createEpic(new Epic("Vamos", "Faster"));
         taskManager.createSubtask(new Subtask("Sub", "for epic",Status.NEW, 1));
-
         Subtask subtaskIdeal = new Subtask("Sub", "for epic", Status.NEW, 1);
-        subtaskIdeal.setId(1);
+        subtaskIdeal.setId(2);
 
         // check
-        Assertions.assertEquals(subtaskIdeal, taskManager.getSubtaskById(1));
+        Assertions.assertEquals(subtaskIdeal, taskManager.getSubtaskById(2));
     }
 
     @Test
@@ -220,6 +222,72 @@ class InMemoryTaskManagerTest {
 
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
+    }
+
+    @Test
+    void addedTaskEqualsHistoryTask() {
+        // prepare
+        taskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
+        taskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
+        Task idealTask = new Task("Zad 1", "Zad - 1", Status.NEW);
+        idealTask.setId(1);
+        // do
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        Task checkedTask = taskManager.getHistory().get(0);
+                // check
+        Assertions.assertEquals(idealTask, checkedTask);
+    }
+
+    @Test
+    void whenDeletedFromListDeletedFromHistory() {
+        // prepare
+        int lenIdeal;
+        int lenHistory;
+        taskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
+        taskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
+
+        // do
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        lenHistory = taskManager.getHistory().size();
+        lenIdeal = taskManager.getAllTasks().size();
+        taskManager.deleteTaskById(1);
+
+        // check
+        Assertions.assertEquals(lenIdeal, lenHistory);
+    }
+
+    @Test
+    void whenAddedToListAddedToHistory() {
+        // prepare
+        int lenIdeal;
+        int lenHistory;
+        taskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
+        taskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
+
+        // do
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        lenHistory = taskManager.getHistory().size();
+        lenIdeal = taskManager.getAllTasks().size();
+
+        // check
+        Assertions.assertEquals(lenIdeal, lenHistory);
+    }
+
+    @Test
+    void deletedSubtasksHasNoId() {
+        // prepare
+        taskManager.createEpic(new Epic("epic", "sdsd"));
+        taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1));
+        taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1));
+
+        // do
+        taskManager.deleteSubtaskById(3);
+
+        // check
+        Assertions.assertEquals(null, taskManager.getSubtaskById(3));
     }
 }
 

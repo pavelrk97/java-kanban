@@ -19,8 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     // интерфейс HistoryManager и использует реализацию, которую возвращает метод getDefaultHistory.
 
     protected int taskId = 0;
-    protected int epicId = 0;
-    protected int subtaskId = 0;
+    
 
 
     public InMemoryTaskManager() {
@@ -31,14 +30,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     public int generateTaskId() {
         return ++taskId;
-    }
-
-    public int generateEpicId() {
-        return ++epicId;
-    }
-
-    public int generateSubtaskId() {
-        return ++subtaskId;
     }
 
     // Получение списка всех задач
@@ -95,8 +86,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
-        if (task != null) {
+        if (task != null && tasks.containsKey(id)) {
             historyManager.add(task);
+        } else {
+            return null;
         }
         return task;
     }
@@ -104,8 +97,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) {
         Epic epic = epics.get(id);
-        if (epic != null) {
+        if (epic != null && epics.containsKey(id)) {
             historyManager.add(epic);
+        } else {
+            return null;
         }
         return epic;
     }
@@ -135,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return null;
         }
-        epic.setId(generateEpicId());
+        epic.setId(generateTaskId());
         epics.put(epic.getId(), epic);
         return epic;
     }
@@ -151,7 +146,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Такого эпика не существует");
             return null;
         }
-        subtask.setId(generateSubtaskId());
+        subtask.setId(generateTaskId());
         subtasks.put(subtask.getId(), subtask);
 
         Epic epic = epics.get(saved);
@@ -232,6 +227,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -244,8 +240,10 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (Integer subTaskId : saved.getSubtasks()) {
             subtasks.remove(subTaskId);
+            historyManager.remove(subTaskId);
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -259,6 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
         int savedEpicId = subtask.getEpicId();
         Epic savedEpic = epics.get(savedEpicId);
         subtasks.remove(id);
+        historyManager.remove(id);
         savedEpic.deleteSubtask(id);
 
         savedEpic.setStatus(calculateStatus(savedEpic));
