@@ -1,7 +1,5 @@
 package utils;
 
-import model.Task;
-
 // Узел двусвязного списка
 public class Node<T> {
     private T data;

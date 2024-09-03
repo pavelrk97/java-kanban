@@ -231,7 +231,7 @@ class InMemoryTaskManagerTest {
         // do
         taskManager.getTaskById(1);
         taskManager.getTaskById(2);
-        Task checkedTask = taskManager.getHistory().get(0);
+        Task checkedTask = taskManager.getHistory().getFirst();
                 // check
         Assertions.assertEquals(idealTask, checkedTask);
     }
