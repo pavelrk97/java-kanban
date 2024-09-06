@@ -20,6 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int taskId = 0;
 
+
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
