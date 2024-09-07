@@ -60,6 +60,16 @@ public class Task {
         this.description = description;
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//        Task task = (Task) obj;
+//        return (getId() == task.getId()) &&
+//                Objects.equals(getName(), task.getName()) &&
+//                Objects.equals(getDescription(), task.getDescription());
+//    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
