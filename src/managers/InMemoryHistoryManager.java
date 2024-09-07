@@ -10,7 +10,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node<Task> head;
     private Node<Task> tail;
-    private int size = 0;
     private Map<Integer, Node<Task>> nodes = new HashMap<>();
 
     // Добавление задачи в конец списка
@@ -27,7 +26,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             oldTail.setNext(newNode);  // Старый tail теперь указывает вперед на новый узел
         }
         nodes.put(task.getId(), newNode);
-        size++;
     }
 
     // сбор всех задач в список
@@ -61,7 +59,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 next.setPrev(previous);
             }
             nodes.remove(node.getData().getId());
-            size--;
         }
     }
 

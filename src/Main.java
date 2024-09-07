@@ -60,6 +60,25 @@ public class Main {
         System.out.println("просмотр задач и заполнение стори\n");
         System.out.println(inMemoryTaskManager.getHistory());
         System.out.println(inMemoryTaskManager.getHistory().size());
+
+        // Создайте эпик с 3 подзадачами и удаление сабов
+        inMemoryTaskManager.createEpic(new Epic("epic with 3", "ny da"));
+        inMemoryTaskManager.createSubtask(new Subtask("Put your name 1", "subT 1", Status.NEW, 7));
+        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 2", Status.NEW, 7));
+        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 3", Status.NEW, 7));
+        System.out.println("  ");
+        printAllTasks();
+        inMemoryTaskManager.getSubtaskById(9);
+        inMemoryTaskManager.getSubtaskById(10);
+        System.out.println("просмотр задач\n");
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println(inMemoryTaskManager.getHistory().size());
+        inMemoryTaskManager.deleteAllEpics();
+        printAllTasks();
+        System.out.println("просмотр задач\n");
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println(inMemoryTaskManager.getHistory().size());
+
     }
 
     private static void printAllTasks() {
