@@ -10,6 +10,7 @@ public class Main {
     public static InMemoryTaskManager inMemoryTaskManager = Managers.getDefault();
 
     public static void main(String[] args) {
+
         // Создайте две задачи
         inMemoryTaskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
         inMemoryTaskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
@@ -55,6 +56,7 @@ public class Main {
         System.out.println("Удалить эпик с сабтаксками по айди и она удалится из стори");
         inMemoryTaskManager.deleteEpicById(3);
         printAllTasks();
+
         // просмотр задач
         System.out.println("-----");
         System.out.println("просмотр задач и заполнение стори\n");
@@ -78,7 +80,6 @@ public class Main {
         System.out.println("просмотр задач\n");
         System.out.println(inMemoryTaskManager.getHistory());
         System.out.println(inMemoryTaskManager.getHistory().size());
-
     }
 
     private static void printAllTasks() {
