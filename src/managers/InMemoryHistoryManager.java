@@ -1,10 +1,9 @@
 package managers;
+
 import model.Task;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+
 import java.util.ArrayList;
-import utils.Node;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -69,13 +68,14 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (task != null) {
-            linkLast(task);
+        if (historyList.size() == MAX_HISTORY_STORAGE) {
+            historyList.removeFirst();
         }
+        historyList.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
-        return getTasks();
+        return historyList;
     }
 }
