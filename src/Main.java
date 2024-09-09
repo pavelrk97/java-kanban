@@ -53,7 +53,7 @@ public class Main {
         System.out.println(inMemoryTaskManager.getHistory().size());
 
         // удалить эпик с сабтаксками по айди и она удалится из стори
-        System.out.println("Удалить эпик с сабтаксками по айди и она удалится из стори");
+        System.out.println("Удалить эпик с сабтаксками по айди и они удалятся из стори");
         inMemoryTaskManager.deleteEpicById(3);
         printAllTasks();
 

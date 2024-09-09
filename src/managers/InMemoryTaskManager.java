@@ -83,6 +83,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() {
+        for (Subtask subtask : subtasks.values()) {
+            historyManager.remove(subtask.getId());
+        }
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.removeSubtasks();
@@ -272,7 +275,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // пересчёт статуса эпика
-    public Status calculateStatus(Epic epic) {
+    private Status calculateStatus(Epic epic) {
         List<Integer> subtaskList = epic.getSubtasks();
         if (subtaskList.isEmpty()) {
             return Status.NEW;
