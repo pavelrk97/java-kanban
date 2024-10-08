@@ -9,7 +9,7 @@ import status.Status;
 import java.io.*;
 
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager{
+public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
     private final File file;
 
