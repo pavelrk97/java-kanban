@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node<Task> head;
     private Node<Task> tail;
-    private Map<Integer, Node<Task>> nodes = new HashMap<>();
+    private final Map<Integer, Node<Task>> nodes = new HashMap<>();
 
     // Добавление задачи в конец списка
     public void linkLast(Task task) {
