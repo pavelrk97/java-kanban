@@ -1,34 +1,105 @@
 package managers;
 
+import enums.TaskType;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import status.Status;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
+import java.io.*;
 
-public class FileBackedTaskManager extends InMemoryTaskManager {
-    private File file;
-    private final InMemoryTaskManager manager = new InMemoryTaskManager();
 
-    public FileBackedTaskManager(HistoryManager historyManager, String path) {
-        this.file = new File(path);
+public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager{
+
+    private final File file;
+
+    public FileBackedTaskManager(HistoryManager historyManager, File file) {
+        super(historyManager);
+        this.file = file;
     }
 
     public void save() {
-        try (Writer writer = new FileWriter(file)) {
-            List<Task> allTasks = getAllTasks();
-            for (Task task : allTasks) {
-                String taskAsString = null; //
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("id,type,name,status,description,epic\n");
+            for (Integer key : tasks.keySet()) {
+                writer.write(tasks.get(key).toString() + "\n");
             }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            for (Integer key : epics.keySet()) {
+                writer.write(epics.get(key).toString() + "\n");
+            }
+            for (Integer key : subtasks.keySet()) {
+                writer.write(subtasks.get(key).toString() + "\n");
+            }
+        } catch (IOException exp) {
+            throw new ExceptionsManager("Произошла ошибка записи в файл", exp);
         }
     }
+
+    protected static Task parseFromString(String value) {
+        Task parsedTask;
+        String[] parts = value.split(",");
+        int id = Integer.parseInt(parts[0]);
+        TaskType taskType = TaskType.valueOf(parts[1]);
+        String name = parts[2];
+        Status status = Status.valueOf(parts[3]);
+        String description = parts[4];
+        switch (taskType) {
+            case TASK:
+                parsedTask = new Task(id, name, description);
+                parsedTask.setStatus(status);
+                break;
+
+            case EPIC:
+                parsedTask = new Epic(id, name, description);
+                parsedTask.setStatus(status);
+                break;
+
+            case SUBTASK:
+                int epicId = Integer.parseInt(parts[5]);
+                parsedTask = new Subtask(id, name, description, epicId);
+                parsedTask.setStatus(status);
+                break;
+            default:
+                throw new ExceptionsManager("Неизвестный тип задачи: " + taskType);
+        }
+        return parsedTask;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                if (line.isEmpty()) {
+                    break;
+                }
+                if (line.contains("id")) {
+                    continue;
+                }
+                Task loadedTask = parseFromString(line);
+                int id = loadedTask.getId();
+                switch (loadedTask.getType()) {
+                    case TASK:
+                        tasks.put(id, loadedTask);
+                        break;
+                    case EPIC:
+                        epics.put(id, (Epic) loadedTask);
+                        break;
+                    case SUBTASK:
+                        subtasks.put(id, (Subtask) loadedTask);
+                        Epic epic = epics.get(subtasks.get(id).getEpicId());
+                        epics.put(id, epic);
+                        break;
+                }
+            }
+        } catch (FileNotFoundException exp) {
+            throw new RuntimeException("Файл не найден", exp);
+        } catch (IOException exp) {
+            throw new ExceptionsManager("Произошла ошибка чтения из файла", exp);
+        }
+        return manager;
+    }
+
 
     @Override
     public Task createTask(Task task) {

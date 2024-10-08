@@ -12,19 +12,20 @@ import java.util.Map;
 import status.Status;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected Map<Integer, Task> tasks;
-    protected Map<Integer, Epic> epics;
-    protected Map<Integer, Subtask> subtasks;
-    protected HistoryManager historyManager = Managers.getDefaultHistory(); // бращается к менеджеру истории через
+    protected static Map<Integer, Task> tasks;
+    protected static Map<Integer, Epic> epics;
+    protected static Map<Integer, Subtask> subtasks;
+    protected static HistoryManager historyManager; // бращается к менеджеру истории через
     // интерфейс HistoryManager и использует реализацию, которую возвращает метод getDefaultHistory.
 
     protected int taskId = 0;
 
 
-    public InMemoryTaskManager() {
-        this.tasks = new HashMap<>();
-        this.epics = new HashMap<>();
-        this.subtasks = new HashMap<>();
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        tasks = new HashMap<>();
+        epics = new HashMap<>();
+        subtasks = new HashMap<>();
+        InMemoryTaskManager.historyManager = historyManager;
     }
 
     public int generateTaskId() {
