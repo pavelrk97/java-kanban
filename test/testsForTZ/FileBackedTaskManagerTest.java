@@ -54,4 +54,28 @@ public class FileBackedTaskManagerTest {
         assertEquals(saveManager.getAllEpics(), loadManager.getAllEpics());
         assertEquals(saveManager.getAllSubtasks(), loadManager.getAllSubtasks());
     }
+
+    // Проверка файлового менеджера, созданного из непустого файла
+    @Test
+    public void LoadFromNonEmptyFile() {
+        // Создаём несколько задач, эпиков и подзадач
+        Task task1 = new Task(1, "Задача 1", "Описание задачи 1", NEW);
+        Task task2 = new Task(2, "Задача 2", "Описание задачи 2", NEW);
+        Epic epic1 = new Epic(3, "Эпик 1", "Описание эпика 1", NEW);
+        Subtask subtask1 = new Subtask(4, "Подзадача 1", "Описание подзадачи 1", NEW, 3);
+
+        // Добавляем их в менеджер
+        saveManager.createTask(task1);
+        saveManager.createTask(task2);
+        saveManager.createEpic(epic1);
+        saveManager.createSubtask(subtask1);
+
+        // Сохраняем данные в файл
+        saveManager.save();
+
+        // Проверяем, что загрузка данных корректна
+        assertEquals(saveManager.getAllTasks(), loadManager.getAllTasks(), "Задачи не совпадают после загрузки");
+        assertEquals(saveManager.getAllEpics(), loadManager.getAllEpics(), "Эпики не совпадают после загрузки");
+        assertEquals(saveManager.getAllSubtasks(), loadManager.getAllSubtasks(), "Подзадачи не совпадают после загрузки");
+    }
 }

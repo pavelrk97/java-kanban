@@ -31,7 +31,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 writer.write(subtasks.get(key).toString() + "\n");
             }
         } catch (IOException exp) {
-            throw new ExceptionsManager("Произошла ошибка записи в файл", exp);
+            throw new ExceptionsSaveManager("Произошла ошибка записи в файл", exp);
         }
     }
 
@@ -45,13 +45,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         String description = parts[4];
         switch (taskType) {
             case TASK:
-                parsedTask = new Task(id, name, description);
-                parsedTask.setStatus(status);
+                parsedTask = new Task(id, name, description, status);
                 break;
 
             case EPIC:
-                parsedTask = new Epic(id, name, description);
-                parsedTask.setStatus(status);
+                parsedTask = new Epic(id, name, description, status);
                 break;
 
             case SUBTASK:
@@ -60,7 +58,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 parsedTask.setStatus(status);
                 break;
             default:
-                throw new ExceptionsManager("Неизвестный тип задачи: " + taskType);
+                throw new ExceptionsSaveManager("Неизвестный тип задачи: " + taskType);
         }
         return parsedTask;
     }
@@ -95,7 +93,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         } catch (FileNotFoundException exp) {
             throw new RuntimeException("Файл не найден", exp);
         } catch (IOException exp) {
-            throw new ExceptionsManager("Произошла ошибка чтения из файла", exp);
+            throw new ExceptionsSaveManager("Произошла ошибка чтения из файла", exp);
         }
         return manager;
     }
@@ -188,6 +186,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     @Override
     public void deleteSubtaskById(int id) {
         super.deleteSubtaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteAllTasks() {
+        super.deleteAllTasks();
+        save();
+    }
+
+    @Override
+    public void deleteAllEpics() {
+        super.deleteAllEpics();
+        save();
+    }
+
+    @Override
+    public void deleteAllSubtasks() {
+        super.deleteAllSubtasks();
         save();
     }
 }
