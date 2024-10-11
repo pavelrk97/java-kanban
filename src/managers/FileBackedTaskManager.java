@@ -12,6 +12,7 @@ import java.io.*;
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
     private final File file;
+    private final InMemoryTaskManager manager = new InMemoryTaskManager(historyManager);
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -63,7 +64,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return parsedTask;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while (reader.ready()) {

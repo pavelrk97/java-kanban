@@ -29,7 +29,9 @@ public class FileBackedTaskManagerTest {
         historyManager = Managers.getDefaultHistory();
         tempFile = File.createTempFile("tasks", "csv");
         saveManager = new FileBackedTaskManager(historyManager, tempFile);
-        loadManager = FileBackedTaskManager.loadFromFile(tempFile);
+
+        loadManager = new FileBackedTaskManager(historyManager, tempFile);
+        loadManager.loadFromFile(tempFile);
     }
 
     // Проверить сохранение и загрузку пустого файла
