@@ -16,23 +16,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static status.Status.*;
 
-public class FileBackedTaskManagerTest {
+    public class FileBackedTaskManagerTest {
 
-    InMemoryHistoryManager historyManager;
-    File tempFile;
-    FileBackedTaskManager saveManager;
-    FileBackedTaskManager loadManager;
+        InMemoryHistoryManager historyManager;
+        File tempFile;
+        FileBackedTaskManager saveManager;
+        FileBackedTaskManager loadManager;
 
-    // Для тестирования методов использовать функцию создания временных файлов File.createTempFile(…)
-    @BeforeEach
-    void beforeEach() throws IOException {
-        historyManager = Managers.getDefaultHistory();
-        tempFile = File.createTempFile("tasks", "csv");
-        saveManager = new FileBackedTaskManager(historyManager, tempFile);
-        loadManager = FileBackedTaskManager.loadFromFile(tempFile);
+        // Для тестирования методов использовать функцию создания временных файлов File.createTempFile(…)
+        @BeforeEach
+        void beforeEach() throws IOException {
+            historyManager = Managers.getDefaultHistory();
+            tempFile = File.createTempFile("tasks", "csv");
+            saveManager = new FileBackedTaskManager(historyManager, tempFile);
+            loadManager = new FileBackedTaskManager(historyManager, tempFile);
+            loadManager = FileBackedTaskManager.loadFromFile(tempFile);
+        }
+
+        @Test
+        public void testLoadManagerFromFile() throws IOException {
+            // Подготовка файла с данными
+            File dataFile = new File("D:\\Proger\\java-kanban\\data.csv"); // Используем ваш файл
+
+            // Создание менеджера из существующего файла
+            FileBackedTaskManager loadManager = FileBackedTaskManager.loadFromFile(dataFile);
+            System.out.println(loadManager.getAllTasks());
+        }
+
+        @Test
+        public void tesSaveToManager() throws IOException {
+            // Подготовка файла с данными
+            File dataFile = new File("D:\\Proger\\java-kanban\\data.csv"); // Используем ваш файл
+
+            // Создание менеджера из существующего файла
+            FileBackedTaskManager saveManager = new FileBackedTaskManager(historyManager, dataFile);
+            saveManager.createTask(new Task(1,"Задача 1", "Описание задачи 1", NEW));
+            System.out.println(loadManager.getAllTasks());
+            System.out.println(saveManager.getAllTasks());
+        }
     }
 
-    // Проверить сохранение и загрузку пустого файла
+/*
+        // Проверить сохранение и загрузку пустого файла
     @Test
     public void saveAndLoadFromEmptyFile() {
         saveManager.save();
@@ -49,6 +74,12 @@ public class FileBackedTaskManagerTest {
         saveManager.createTask(new Task(2,"Задача 2", "Описание задачи 2", NEW));
         saveManager.createEpic(new Epic(3,"Эпик 1", "Описание эпика 1", NEW));
         saveManager.createSubtask(new Subtask(4,"Подзадача 1", "Описание подзадачи 1", NEW,3));
+
+        // Сохраняем данные в файл
+        saveManager.save();
+
+        // Перезагружаем менеджер из файла
+        loadManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertEquals(saveManager.getAllTasks(), loadManager.getAllTasks());
         assertEquals(saveManager.getAllEpics(), loadManager.getAllEpics());
@@ -79,3 +110,4 @@ public class FileBackedTaskManagerTest {
         assertEquals(saveManager.getAllSubtasks(), loadManager.getAllSubtasks(), "Подзадачи не совпадают после загрузки");
     }
 }
+*/

@@ -7,6 +7,8 @@ import model.Task;
 import status.Status;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.util.List;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
@@ -67,6 +69,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
         HistoryManager historyManager = new InMemoryHistoryManager();
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
+        try {
+            List<String> lines = Files.readAllLines(file.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while (reader.ready()) {

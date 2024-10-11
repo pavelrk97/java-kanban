@@ -1,0 +1,3 @@
+id,type,name,status,description,epic
+model.Task{id=1, name='Пример задачи', description='Описание задачи', taskStatus=NEW}
+model.Epic{subtasks=[], id=2, name='Epicname', description='weweweew 23423', taskStatus=NEW}

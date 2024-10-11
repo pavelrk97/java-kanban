@@ -1,12 +1,49 @@
-import managers.Managers;
+import managers.*;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import managers.InMemoryTaskManager;
 import status.Status;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Main {
 
+    static InMemoryHistoryManager historyManager;
+    static File data;
+    static FileBackedTaskManager saveManager;
+    static FileBackedTaskManager loadManager;
+
+    public static void main(String[] args) {
+        // Инициализация менеджера истории
+        historyManager = Managers.getDefaultHistory();
+
+        // Создание временного файла для хранения задач
+        data = new File("data.csv");
+
+        // Инициализация менеджера задач с сохранением в файл
+        saveManager = new FileBackedTaskManager(historyManager, data);
+
+        // Создание задачи
+        Task task = new Task(1, "Пример задачи", "Описание задачи", Status.NEW);
+        Epic epic = new Epic(1, "Epicname", "weweweew 23423", Status.NEW);
+        saveManager.createTask(task);
+        saveManager.createEpic(epic);
+
+        System.out.println("Задачи загружены из файла: ");
+        System.out.println(saveManager.getAllTasks());
+        System.out.println(saveManager.getAllEpics());
+
+        // Загрузка задач из файла
+        loadManager = FileBackedTaskManager.loadFromFile(data);
+
+        System.out.println(loadManager.getAllEpics());
+        System.out.println(loadManager.getAllTasks());
+        // Выводим задачи
+
+    }
+}
+    /*
     public static InMemoryTaskManager inMemoryTaskManager = Managers.getDefault();
 
     public static void main(String[] args) {
@@ -101,5 +138,6 @@ public class Main {
             System.out.println(subtask);
         }
     }
-}
+    */
+
 
