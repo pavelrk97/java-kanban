@@ -64,7 +64,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
+
+        HistoryManager historyManager = new InMemoryHistoryManager();
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -78,15 +81,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 int id = loadedTask.getId();
                 switch (loadedTask.getType()) {
                     case TASK:
-                        tasks.put(id, loadedTask);
+                        manager.tasks.put(id, loadedTask);
                         break;
                     case EPIC:
-                        epics.put(id, (Epic) loadedTask);
+                        manager.epics.put(id, (Epic) loadedTask);
                         break;
                     case SUBTASK:
-                        subtasks.put(id, (Subtask) loadedTask);
-                        Epic epic = epics.get(subtasks.get(id).getEpicId());
-                        epics.put(id, epic);
+                        manager.subtasks.put(id, (Subtask) loadedTask);
+                        Epic epic = manager.epics.get(manager.subtasks.get(id).getEpicId());
+                        manager.epics.put(id, epic);
                         break;
                 }
             }
