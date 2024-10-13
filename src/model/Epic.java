@@ -47,6 +47,15 @@ public class Epic extends Task {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Task task = (Task) object;
+        return super.equals(object) && this.subtasks == subtasks;
+        // добавить параметры для сравнения + сабт +парам епика + для епика айди сабтасок внутри
+    }
+
+    @Override
     public String toString() {
         return String.format("%d,%s,%s,%s,%s", getId(), TaskType.EPIC, getName(), getStatus(), getDescription());
     }

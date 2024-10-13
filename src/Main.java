@@ -26,9 +26,9 @@ public class Main {
 
         saveManager.createTask(new Task("Задача 1", "Описание задачи 1", NEW));
         saveManager.createTask(new Task("Задача 2", "Описание задачи 2", NEW));
-        saveManager.createEpic(new Epic(3,"Эпик 1", "Описание эпика 1", NEW));
+        saveManager.createEpic(new Epic(30,"Эпик 1", "Описание эпика 1", NEW));
         saveManager.createEpic(new Epic(4,"Эпик 1", "Описание эпика 1", NEW));
-        saveManager.createSubtask(new Subtask(5,"Подзадача 1", "Описание подзадачи 1", NEW,3));
+        saveManager.createSubtask(new Subtask(5,"Подзадача 1", "Описание подзадачи 1", NEW,30));
         saveManager.createSubtask(new Subtask(6,"Подзадача 1", "Описание подзадачи 1", DONE,4));
         saveManager.createSubtask(new Subtask(7,"Подзадача 1", "Описание подзадачи 1", NEW,3));
 

@@ -26,8 +26,8 @@ class InMemoryTaskManagerTest {
     @Test
     void addNewTaskShouldSaveTaskEqualsById() {
         // prepare
-        Task task = new Task("Name", "Desct1");
-        Task expectedTask = new Task("Name2", "Desct1");
+        Task task = new Task("Name", "Desct1", Status.NEW);
+        Task expectedTask = new Task("Name", "Desct1", Status.NEW);
         expectedTask.setId(1);
 
         // do
@@ -36,7 +36,6 @@ class InMemoryTaskManagerTest {
         // check
         Assertions.assertNotNull(taskManager.getTaskById(1));
         Assertions.assertEquals(expectedTask, task);
-
     }
 
     @Test
@@ -71,7 +70,7 @@ class InMemoryTaskManagerTest {
     void subsAreEqual () {
         // prepare
         Subtask subtask1 = new Subtask("asda", "qweq", Status.NEW, 1);
-        Subtask subtask2 = new Subtask("asdaweqw", "qweqqweqw", Status.NEW, 2);
+        Subtask subtask2 = new Subtask("asda", "qweq", Status.NEW, 2);
 
         // do
         subtask1.setId(1);

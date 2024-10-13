@@ -98,6 +98,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         fileBackedTaskManager.subtasks.put(loadedTask.getId(), (Subtask) loadedTask);
                         break;
                 }
+                fileBackedTaskManager.taskId = id; // не даем заменить предыдущие таски при загрузке, уникальность
+                // важное
             }
 
             fileBackedTaskManager.subtasks.values().forEach(subtask -> {
@@ -117,7 +119,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     @Override
     public Task createTask(Task task) {
-        super.createTask(task);
+        task = super.createTask(task);
         save();
         return task;
     }
