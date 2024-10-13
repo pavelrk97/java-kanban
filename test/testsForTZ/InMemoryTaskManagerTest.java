@@ -70,7 +70,7 @@ class InMemoryTaskManagerTest {
     void subsAreEqual () {
         // prepare
         Subtask subtask1 = new Subtask("asda", "qweq", Status.NEW, 1);
-        Subtask subtask2 = new Subtask("asda", "qweq", Status.NEW, 2);
+        Subtask subtask2 = new Subtask("asda", "qweq", Status.NEW, 1);
 
         // do
         subtask1.setId(1);
