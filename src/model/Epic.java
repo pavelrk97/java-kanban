@@ -5,6 +5,7 @@ import status.Status;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Integer> subtasks = new ArrayList<>();
@@ -47,13 +48,21 @@ public class Epic extends Task {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Epic epic = (Epic) object;
+        return super.equals(object) && Objects.equals(this.subtasks, epic.subtasks);
+        // добавить параметры для сравнения + сабт +парам епика + для епика айди сабтасок внутри
+    }
+
+    @Override
     public String toString() {
-        return "model.Epic{" +
-                "subtasks=" + getSubtasks() +
-                ", id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", taskStatus=" + getStatus() +
-                '}';
+        return String.format("%d,%s,%s,%s,%s, %s", getId(), TaskType.EPIC, getName(), getStatus(), getDescription(), getSubtasks());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasks);
     }
 }

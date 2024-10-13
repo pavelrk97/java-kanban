@@ -84,7 +84,9 @@ public class Task {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Task task = (Task) object;
-        return id == task.id;
+        return id == task.id && name.equals(task.name)
+                && description.equals(task.description);
+        // добавить параметры для сравнения + сабт +парам епика + для епика айди сабтасок внутри
     }
 
     @Override
@@ -94,12 +96,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return "model.Task{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", taskStatus=" + getStatus() +
-                '}';
+        return String.format("%d,%s,%s,%s,%s", getId(), TaskType.TASK, getName(), getStatus(), getDescription());
     }
+
 }
 
