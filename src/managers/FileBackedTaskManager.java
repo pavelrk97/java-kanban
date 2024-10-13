@@ -7,6 +7,8 @@ import model.Task;
 import status.Status;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
@@ -20,20 +22,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public void save() {
         try (FileWriter writer = new FileWriter(file)) {
+            // Заголовок файла
             writer.write("id,type,name,status,description,epic\n");
-            for (Integer key : tasks.keySet()) {
-                writer.write(tasks.get(key).toString() + "\n");
+
+            // Сохраняем все задачи
+            for (Task task : getAllTasks()) {
+                writer.write(task.toString() + "\n");
             }
-            for (Integer key : epics.keySet()) {
-                writer.write(epics.get(key).toString() + "\n");
+
+            // Сохраняем все эпики
+            for (Epic epic : getAllEpics()) {
+                writer.write(epic.toString() + "\n");
             }
-            for (Integer key : subtasks.keySet()) {
-                writer.write(subtasks.get(key).toString() + "\n");
+
+            // Сохраняем все подзадачи
+            for (Subtask subtask : getAllSubtasks()) {
+                writer.write(subtask.toString() + "\n");
             }
         } catch (IOException exp) {
             throw new ExceptionsSaveManager("Произошла ошибка записи в файл", exp);
         }
     }
+
+
 
     protected static Task parseFromString(String value) {
         Task parsedTask;
@@ -54,8 +65,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
             case SUBTASK:
                 int epicId = Integer.parseInt(parts[5]);
-                parsedTask = new Subtask(id, name, description, epicId);
-                parsedTask.setStatus(status);
+                parsedTask = new Subtask(id, name, description, status, epicId);
                 break;
             default:
                 throw new ExceptionsSaveManager("Неизвестный тип задачи: " + taskType);
@@ -66,7 +76,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public static FileBackedTaskManager loadFromFile(File file) {
 
         HistoryManager historyManager = new InMemoryHistoryManager();
-        FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(historyManager, file);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while (reader.ready()) {
@@ -81,24 +91,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 int id = loadedTask.getId();
                 switch (loadedTask.getType()) {
                     case TASK:
-                        manager.tasks.put(id, loadedTask);
+                        fileBackedTaskManager.tasks.put(loadedTask.getId(), loadedTask);
                         break;
                     case EPIC:
-                        manager.epics.put(id, (Epic) loadedTask);
+                        fileBackedTaskManager.epics.put(loadedTask.getId(), (Epic) loadedTask);
                         break;
                     case SUBTASK:
-                        manager.subtasks.put(id, (Subtask) loadedTask);
-                        Epic epic = manager.epics.get(manager.subtasks.get(id).getEpicId());
-                        manager.epics.put(id, epic);
+                        fileBackedTaskManager.subtasks.put(loadedTask.getId(), (Subtask) loadedTask);
                         break;
                 }
             }
-        } catch (FileNotFoundException exp) {
+
+            fileBackedTaskManager.subtasks.values().forEach(subtask -> {
+                Epic epic = fileBackedTaskManager.epics.get(subtask.getEpicId());
+                epic.addSubtask(subtask.getEpicId());
+
+            });
+
+        }catch (FileNotFoundException exp) {
             throw new RuntimeException("Файл не найден", exp);
         } catch (IOException exp) {
             throw new ExceptionsSaveManager("Произошла ошибка чтения из файла", exp);
         }
-        return manager;
+        return fileBackedTaskManager;
     }
 
 

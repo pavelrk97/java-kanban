@@ -18,24 +18,24 @@ import static status.Status.*;
 
 public class FileBackedTaskManagerTest {
 
-    InMemoryHistoryManager historyManager;
-    File tempFile;
-    FileBackedTaskManager saveManager;
-    FileBackedTaskManager loadManager;
+    static InMemoryHistoryManager historyManager;
+    static File data;
+    static FileBackedTaskManager saveManager;
+    static FileBackedTaskManager loadManager;
 
     // Для тестирования методов использовать функцию создания временных файлов File.createTempFile(…)
     @BeforeEach
     void beforeEach() throws IOException {
         historyManager = Managers.getDefaultHistory();
-        tempFile = File.createTempFile("tasks", "csv");
-        saveManager = new FileBackedTaskManager(historyManager, tempFile);
-        loadManager = FileBackedTaskManager.loadFromFile(tempFile);
+        data = File.createTempFile("tasks", "csv");
+        saveManager = new FileBackedTaskManager(historyManager, data);
     }
 
     // Проверить сохранение и загрузку пустого файла
     @Test
     public void saveAndLoadFromEmptyFile() {
         saveManager.save();
+        loadManager = FileBackedTaskManager.loadFromFile(data);
 
         assertTrue(loadManager.getAllTasks().isEmpty());
         assertTrue(loadManager.getAllEpics().isEmpty());
@@ -50,6 +50,7 @@ public class FileBackedTaskManagerTest {
         saveManager.createEpic(new Epic(3,"Эпик 1", "Описание эпика 1", NEW));
         saveManager.createSubtask(new Subtask(4,"Подзадача 1", "Описание подзадачи 1", NEW,3));
 
+        loadManager = FileBackedTaskManager.loadFromFile(data);
         assertEquals(saveManager.getAllTasks(), loadManager.getAllTasks());
         assertEquals(saveManager.getAllEpics(), loadManager.getAllEpics());
         assertEquals(saveManager.getAllSubtasks(), loadManager.getAllSubtasks());
@@ -74,6 +75,7 @@ public class FileBackedTaskManagerTest {
         saveManager.save();
 
         // Проверяем, что загрузка данных корректна
+        loadManager = FileBackedTaskManager.loadFromFile(data);
         assertEquals(saveManager.getAllTasks(), loadManager.getAllTasks(), "Задачи не совпадают после загрузки");
         assertEquals(saveManager.getAllEpics(), loadManager.getAllEpics(), "Эпики не совпадают после загрузки");
         assertEquals(saveManager.getAllSubtasks(), loadManager.getAllSubtasks(), "Подзадачи не совпадают после загрузки");

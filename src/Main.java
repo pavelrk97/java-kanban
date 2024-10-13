@@ -1,3 +1,5 @@
+import managers.FileBackedTaskManager;
+import managers.InMemoryHistoryManager;
 import managers.Managers;
 import model.Epic;
 import model.Subtask;
@@ -5,101 +7,43 @@ import model.Task;
 import managers.InMemoryTaskManager;
 import status.Status;
 
+import java.io.File;
+import java.io.IOException;
+
+import static status.Status.NEW;
+
 public class Main {
+    static InMemoryHistoryManager historyManager;
+    static File data;
+    static FileBackedTaskManager saveManager;
+    static FileBackedTaskManager loadManager;
 
-    public static InMemoryTaskManager inMemoryTaskManager = Managers.getDefault();
+    public static void main(String[] args) throws IOException {
+        historyManager = Managers.getDefaultHistory();
+        data = new File("data.csv");
+        // data = File.createTempFile("tasks", "csv");
+        saveManager = new FileBackedTaskManager(historyManager, data);
 
-    public static void main(String[] args) {
 
-        // Создайте две задачи
-        inMemoryTaskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
-        inMemoryTaskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
+            saveManager.createTask(new Task(1,"Задача 1", "Описание задачи 1", NEW));
+            saveManager.createTask(new Task(2,"Задача 2", "Описание задачи 2", NEW));
+            saveManager.createEpic(new Epic(3,"Эпик 1", "Описание эпика 1", NEW));
+        saveManager.createEpic(new Epic(4,"Эпик 1", "Описание эпика 1", NEW));
+            saveManager.createSubtask(new Subtask(7,"Подзадача 1", "Описание подзадачи 1", NEW,3));
+        saveManager.createSubtask(new Subtask(99,"Подзадача 1", "Описание подзадачи 1", NEW,4));
+        saveManager.createSubtask(new Subtask(99,"Подзадача 1", "Описание подзадачи 1", NEW,3));
 
-        // Создайте эпик с 3 подзадачами
-        inMemoryTaskManager.createEpic(new Epic("epic with 3", "ny da"));
-        inMemoryTaskManager.createSubtask(new Subtask("Put your name 1", "subT 1", Status.NEW, 3));
-        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 2", Status.NEW, 3));
-        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 3", Status.NEW, 3));
-        System.out.println("  ");
+        loadManager = FileBackedTaskManager.loadFromFile(data);
 
-        // Создайте эпик пустой
-        inMemoryTaskManager.createEpic(new Epic("model.Epic", "Epiocc createsd"));
-
-        printAllTasks();
-        // запросите задачи
-        System.out.println("Запрос задач");
-        System.out.println(inMemoryTaskManager.getTaskById(2));
-        System.out.println(inMemoryTaskManager.getEpicById(3));
-        System.out.println(inMemoryTaskManager.getSubtaskById(5));
-        System.out.println(inMemoryTaskManager.getTaskById(2));
-        System.out.println(inMemoryTaskManager.getTaskById(1));
-
-        // просмотр задач
-        System.out.println("-----");
-        System.out.println("просмотр задач и заполнение стори\n");
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryTaskManager.getHistory().size());
-
-        // удалить таску по айди и она удалится из стори
-        System.out.println("  ");
-        System.out.println("Удалить таску по айди и она удалится из стори");
-        inMemoryTaskManager.deleteTaskById(2);
-        printAllTasks();
-
-        // просмотр задач
-        System.out.println("-----");
-        System.out.println("просмотр задач и заполнение стори\n");
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryTaskManager.getHistory().size());
-
-        // удалить эпик с сабтаксками по айди и она удалится из стори
-        System.out.println("Удалить эпик с сабтаксками по айди и они удалятся из стори");
-        inMemoryTaskManager.deleteEpicById(3);
-        printAllTasks();
-
-        // просмотр задач
-        System.out.println("-----");
-        System.out.println("просмотр задач и заполнение стори\n");
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryTaskManager.getHistory().size());
-
-        // Создайте эпик с 3 подзадачами и удаление сабов
-        inMemoryTaskManager.createEpic(new Epic("epic with 3", "ny da"));
-        inMemoryTaskManager.createSubtask(new Subtask("Put your name 1", "subT 1", Status.NEW, 7));
-        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 2", Status.NEW, 7));
-        inMemoryTaskManager.createSubtask(new Subtask("Name 2 ", "Subt 3", Status.NEW, 7));
-        System.out.println("  ");
-        printAllTasks();
-        inMemoryTaskManager.getSubtaskById(9);
-        inMemoryTaskManager.getSubtaskById(10);
-        System.out.println("просмотр задач\n");
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryTaskManager.getHistory().size());
-        inMemoryTaskManager.deleteAllEpics();
-        printAllTasks();
-        System.out.println("просмотр задач\n");
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryTaskManager.getHistory().size());
-    }
-
-    private static void printAllTasks() {
-        System.out.println("Задачи:");
-        for (Task task : Main.inMemoryTaskManager.getAllTasks()) {
-            System.out.println(task);
+        System.out.println(saveManager.getAllTasks());
+        System.out.println(saveManager.getAllEpics());
+        System.out.println(saveManager.getAllSubtasks());
+        System.out.println("2222");
+        System.out.println(loadManager.getAllSubtasks());
+        System.out.println(loadManager.getAllTasks());
         }
-        System.out.println("Эпики:");
-        for (Epic epic : Main.inMemoryTaskManager.getAllEpics()) {
-            System.out.println(epic);
+    }// Для тестирования методов использовать функцию создания временных файлов File.createTempFile(…)
 
-            for (Task task : Main.inMemoryTaskManager.getSubtaskList(epic)) {
-                System.out.println("--> " + task);
-            }
-        }
 
-        System.out.println("Подзадачи:");
-        for (Task subtask : Main.inMemoryTaskManager.getAllSubtasks()) {
-            System.out.println(subtask);
-        }
-    }
-}
+
 

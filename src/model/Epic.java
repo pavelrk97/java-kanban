@@ -48,12 +48,8 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "model.Epic{" +
-                "subtasks=" + getSubtasks() +
-                ", id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", taskStatus=" + getStatus() +
-                '}';
+        return String.format("%d,%s,%s,%s,%s", getId(), TaskType.EPIC, getName(), getStatus(), getDescription());
     }
+
+
 }
