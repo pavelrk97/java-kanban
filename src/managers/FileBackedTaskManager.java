@@ -42,8 +42,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-
-
     protected static Task parseFromString(String value) {
         Task parsedTask;
         String[] parts = value.split(",");
@@ -98,13 +96,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         fileBackedTaskManager.subtasks.put(loadedTask.getId(), (Subtask) loadedTask);
                         break;
                 }
-                fileBackedTaskManager.taskId = id; // не даем заменить предыдущие таски при загрузке, уникальность
+                fileBackedTaskManager.taskId = id + 1; // не даем заменить предыдущие таски при загрузке, уникальность
                 // важное
             }
 
             fileBackedTaskManager.subtasks.values().forEach(subtask -> {
                 Epic epic = fileBackedTaskManager.epics.get(subtask.getEpicId());
-                epic.addSubtask(subtask.getEpicId());
+                epic.addSubtask(subtask.getId());
 
             });
 
@@ -126,14 +124,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     @Override
     public Epic createEpic(Epic epic) {
-        super.createEpic(epic);
+        epic = super.createEpic(epic);
         save();
         return epic;
     }
 
     @Override
     public Subtask createSubtask(Subtask subtask) {
-        super.createSubtask(subtask);
+        subtask = super.createSubtask(subtask);
         save();
         return subtask;
     }
