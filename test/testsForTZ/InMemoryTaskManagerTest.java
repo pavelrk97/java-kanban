@@ -200,7 +200,6 @@ class InMemoryTaskManagerTest {
         subChangeEpic.setId(1);
         taskManager.createSubtask(subChangeEpic); // сабтаск не стал эпиком
 
-        // check
         String epicName = epic.getName();
         String epicDes = epic.getDescription();
 
