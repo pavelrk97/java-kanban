@@ -71,9 +71,6 @@ public class FileBackedTaskManagerTest {
         saveManager.createEpic(epic1);
         saveManager.createSubtask(subtask1);
 
-        // Сохраняем данные в файл
-        saveManager.save();
-
         // Проверяем, что загрузка данных корректна
         loadManager = FileBackedTaskManager.loadFromFile(data);
         assertEquals(saveManager.getAllTasks(), loadManager.getAllTasks(), "Задачи не совпадают после загрузки");
