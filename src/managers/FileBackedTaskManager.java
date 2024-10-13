@@ -107,7 +107,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             });
 
         }catch (FileNotFoundException exp) {
-            throw new RuntimeException("Файл не найден", exp);
+            throw new  IllegalArgumentException("Файл не найден", exp);  // приведена более узкая шибка
         } catch (IOException exp) {
             throw new ExceptionsSaveManager("Произошла ошибка чтения из файла", exp);
         }
