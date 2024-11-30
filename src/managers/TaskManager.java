@@ -3,8 +3,6 @@ package managers;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-
-
 import java.util.List;
 
 public interface TaskManager {
@@ -55,4 +53,9 @@ public interface TaskManager {
 
     // просмотр истории
     List<Task> getHistory();
+
+    // Получить приоритетную задачу
+    List<Task> getPrioritizedTasks();
+
+    boolean checkIntersectionTasks(Task task);
 }

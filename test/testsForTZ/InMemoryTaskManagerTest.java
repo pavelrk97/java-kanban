@@ -12,9 +12,12 @@ import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest {
 
     private TaskManager taskManager;
 
@@ -23,8 +26,9 @@ class InMemoryTaskManagerTest {
         taskManager = Managers.getDefault();
     }
 
+    @Override
     @Test
-    void addNewTaskShouldSaveTaskEqualsById() {
+    public void addNewTaskShouldSaveTaskEqualsById() {
         // prepare
         Task task = new Task("Name", "Desct1", Status.NEW);
         Task expectedTask = new Task("Name", "Desct1", Status.NEW);
@@ -38,8 +42,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(expectedTask, task);
     }
 
+    @Override
     @Test
-    void updateTaskShouldUpdateTaskWithSpecificatedId() {
+    public void updateTaskShouldUpdateTaskWithSpecificatedId() {
         // prepare
         taskManager.createTask(new Task("Task1", "Task des"));
         Task newTask = new Task("Task2", "Updated", Status.DONE, 1);
@@ -52,8 +57,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(taskManager.getTaskById(1), newTask);
     }
 
+    @Override
     @Test
-    void epicsAreEqual () {
+    public void epicsAreEqual() {
         // prepare
         Epic epic = new Epic("Epic", "asda");
         Epic epic2 = new Epic("Epic", "asda");
@@ -66,8 +72,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(epic, epic2);
     }
 
+    @Override
     @Test
-    void subsAreEqual () {
+    public void subsAreEqual() {
         // prepare
         Subtask subtask1 = new Subtask("asda", "qweq", Status.NEW, 1);
         Subtask subtask2 = new Subtask("asda", "qweq", Status.NEW, 1);
@@ -80,18 +87,21 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(subtask1, subtask2);
     }
 
+    @Override
     @Test
-    void getDefaultShouldInitializeInMemoryTaskManager() {
+    public void getDefaultShouldInitializeInMemoryTaskManager() {
         assertInstanceOf(InMemoryTaskManager.class, Managers.getDefault());
     }
 
+    @Override
     @Test
-    void getDefaultHistoryShouldInitializeInMemoryHistoryManager() {
+    public void getDefaultHistoryShouldInitializeInMemoryHistoryManager() {
         assertInstanceOf(InMemoryHistoryManager.class, Managers.getDefaultHistory());
     }
 
+    @Override
     @Test
-    void InMemoryTaskManagerShouldAddTaskShouldLocateById () {
+    public void InMemoryTaskManagerShouldAddTaskShouldLocateById() {
         // prepare
         taskManager.createTask(new Task("Vamos", "Faster"));
 
@@ -102,8 +112,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(taskIdeal, taskManager.getTaskById(1));
     }
 
+    @Override
     @Test
-    void InMemoryTaskManagerShouldAddEpicShouldLocateById () {
+    public void InMemoryTaskManagerShouldAddEpicShouldLocateById() {
         // prepare
         taskManager.createEpic(new Epic("Vamos", "Faster"));
 
@@ -114,8 +125,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(epicIdeal, taskManager.getEpicById(1));
     }
 
+    @Override
     @Test
-    void InMemoryTaskManagerShouldAddSubShouldLocateById () {
+    public void InMemoryTaskManagerShouldAddSubShouldLocateById() {
         // prepare
         taskManager.createEpic(new Epic("Vamos", "Faster"));
         taskManager.createSubtask(new Subtask("Sub", "for epic",Status.NEW, 1));
@@ -126,8 +138,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(subtaskIdeal, taskManager.getSubtaskById(2));
     }
 
+    @Override
     @Test
-    void noConflictWhenCreatedTaskSameID() {  // не нужный тест, тк id дается при добавлении, отличный от предыдущего
+    public void noConflictWhenCreatedTaskSameID() {  // не нужный тест, тк id дается при добавлении, отличный от предыдущего
         // prepare
         int lengthListShouldBe = 2;
         taskManager.createTask(new Task("First", "First")); // id = 1
@@ -142,8 +155,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(lengthListShouldBe, currentLenght);
     }
 
+    @Override
     @Test
-    void allInTaskIsSame() {
+    public void allInTaskIsSame() {
         // prepare
         Task idealTask = new Task("ideal", "task", Status.DONE);
 
@@ -166,8 +180,9 @@ class InMemoryTaskManagerTest {
     }
 
 
+    @Override
     @Test
-    void historyShowsPrevious() {
+    public void historyShowsPrevious() {
         // prepare
         // создаем задачи
         Task taskIdeal = new Task("Task", "Idal");
@@ -186,12 +201,15 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(taskIdeal, taskManager.getHistory().get(0));
     }
 
+    @Override
     @Test
-    void subNotAddedToEpicWithSameId() {
+    public void subNotAddedToEpicWithSameId() {
         // prepare
         Epic epic = new Epic("Wasd", "Wasd");
-        Subtask subtask = new Subtask("for epic", "for", Status.DONE, 1);
-        Subtask subChangeEpic = new Subtask("exp", "experiment", Status.NEW, 1);
+        Subtask subtask = new Subtask("for epic", "for", Status.DONE, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100));
+        Subtask subChangeEpic = new Subtask("exp", "experiment", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100));
 
         // do
         taskManager.createEpic(epic);  // epicId = 1
@@ -219,8 +237,9 @@ class InMemoryTaskManagerTest {
         System.out.println(taskManager.getAllSubtasks());
     }
 
+    @Override
     @Test
-    void addedTaskEqualsHistoryTask() {
+    public void addedTaskEqualsHistoryTask() {
         // prepare
         taskManager.createTask(new Task("Zad 1", "Zad - 1", Status.NEW));
         taskManager.createTask(new Task("zad 2", "Zhpa 12", Status.NEW));
@@ -234,8 +253,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(idealTask, checkedTask);
     }
 
+    @Override
     @Test
-    void whenDeletedFromListDeletedFromHistory() {
+    public void whenDeletedFromListDeletedFromHistory() {
         // prepare
         int lenIdeal;
         int lenHistory;
@@ -253,8 +273,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(lenIdeal, lenHistory);
     }
 
+    @Override
     @Test
-    void whenAddedToListAddedToHistory() {
+    public void whenAddedToListAddedToHistory() {
         // prepare
         int lenIdeal;
         int lenHistory;
@@ -271,8 +292,9 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(lenIdeal, lenHistory);
     }
 
+    @Override
     @Test
-    void deletedSubtasksHasNoId() {
+    public void deletedSubtasksHasNoId() {
         // prepare
         taskManager.createEpic(new Epic("epic", "sdsd"));
         taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1));
@@ -282,8 +304,57 @@ class InMemoryTaskManagerTest {
         taskManager.deleteSubtaskById(3);
 
         // check
-        Assertions.assertEquals(null, taskManager.getSubtaskById(3));
+        assertNull(taskManager.getSubtaskById(3));
     }
+
+    @Override
+    @Test
+    public void crossIntervals() {
+        // prepare
+        taskManager.createEpic(new Epic("epic", "sdsd"));
+        taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100)));
+        taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(200)), Duration.ofMinutes(100)));
+        int numberIdealSubsInEpic = 2;
+
+        // check
+        int currentNumber = taskManager.getAllSubtasks().size();
+        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+    }
+
+    @Override
+    @Test
+    public void crossIntervalsBefore() {
+        // prepare
+        taskManager.createEpic(new Epic("epic", "sdsd"));
+        taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100)));
+        taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z").minus(Duration.ofMinutes(50)), Duration.ofMinutes(100)));
+        int numberIdealSubsInEpic = 1;
+
+        // check
+        int currentNumber = taskManager.getAllSubtasks().size();
+        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+    }
+
+    @Override
+    @Test
+    public void crossIntervalsAfter() {
+        // prepare
+        taskManager.createEpic(new Epic("epic", "sdsd"));
+        taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(1000)));
+        taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(50)), Duration.ofMinutes(100)));
+        int numberIdealSubsInEpic = 1;
+
+        // check
+        int currentNumber = taskManager.getAllSubtasks().size();
+        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+    }
+
 }
 
 
