@@ -22,7 +22,6 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.startTime = Instant.now();
-        
     }
 
     public Task(String name, String description, Status status) {
@@ -50,6 +49,7 @@ public class Task {
         this.description = description;
         this.status = status;
     }
+
     public Task(String name, String description, Status status, Instant startTime) {
         this.name = name;
         this.description = description;
@@ -58,12 +58,12 @@ public class Task {
     }
 
     public Task(int id, String name, String description, Status status, Instant startTime, Duration duration) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.status = status;
-    this.startTime = startTime;
-    this.duration = duration;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public Task(String name, String description, Status status, Instant startTime, Duration duration) {
@@ -142,26 +142,18 @@ public class Task {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Task task = (Task) object;
-        return id == task.id && name.equals(task.name)
-                && description.equals(task.description);
+        return id == task.id && name.equals(task.name) && description.equals(task.description);
         // добавлены параметры для сравнения + сабтаок +парам епика + для епика айди сабтасок внутри
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(),getDescription());
+        return Objects.hash(getName(), getDescription());
     }
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,%s,%s",
-                getId(),
-                TaskType.TASK,
-                getName(),
-                getStatus(),
-                getDescription(),
-                getDuration() == null ? "0" : getDuration().toMinutes(),
-                getStartTime() == null ? "N/A" : getStartTime());
+        return String.format("%d,%s,%s,%s,%s,%s,%s", getId(), TaskType.TASK, getName(), getStatus(), getDescription(), getDuration() == null ? "0" : getDuration().toMinutes(), getStartTime() == null ? "N/A" : getStartTime());
     }
 }
 
