@@ -36,13 +36,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Вспомогательный метод для обновления TreeSet
-    private void updatePrioritizedTasks(Task task, boolean isRemoving) {
+    private void updatePrioritizedTasksAdd(Task task) {
         if (task.getStartTime() != null) {
-            if (isRemoving) {
-                prioritizedTasks.remove(task);
-            } else {
                 prioritizedTasks.add(task);
             }
+    }
+
+    private void updatePrioritizedTasksRemove(Task task) {
+        if (task.getStartTime() != null) {
+                prioritizedTasks.remove(task);
         }
     }
 
@@ -154,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
             task.setId(generateTaskId());
             tasks.put(task.getId(), task);
 
-            updatePrioritizedTasks(task, false); // добавляем задачу в TreeSet
+            updatePrioritizedTasksAdd(task); // добавляем задачу в TreeSet
             return task;
         } else {
             return null;
@@ -188,7 +190,7 @@ public class InMemoryTaskManager implements TaskManager {
 
             Epic epic = epics.get(saved);
             epic.addSubtask(subtask.getId());
-            updatePrioritizedTasks(subtask, false); // добавляем задачу в TreeSet
+            updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
             epic.setStatus(calculateStatus(epic));
             return subtask;
         } else {
@@ -208,9 +210,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStatus() == null) {
             task.setStatus(Status.NEW);
         }
+
+        updatePrioritizedTasksRemove(task);
+        deleteTaskById(task.getId());
         if (!checkIntersectionTasks(task)) {
             tasks.put(task.getId(), task);
-            updatePrioritizedTasks(task, false); // добавляем задачу в TreeSet
+            updatePrioritizedTasksAdd(task);
         } else {
             System.out.println("есть пересечения с другими задачами");
         }
@@ -246,7 +251,9 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Подзадача имеет некорректный номер эпика");
             return;
         }
-        List<Integer> epicSubtaskList = epics.get(epicId).getSubtasks();
+
+        Epic epic = epics.get(epicId);
+        List<Integer> epicSubtaskList = epic.getSubtasks();
         if (!epicSubtaskList.contains(subtask.getId())) {
             System.out.println("Неправильно указан эпик в подзадаче");
             return;
@@ -255,12 +262,16 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getStatus() == null) {
             subtask.setStatus(Status.NEW);
         }
+
+        updatePrioritizedTasksRemove(subtask);
+        deleteSubtaskById(subtask.getId());
+
         if (!checkIntersectionTasks(subtask)) {
             subtasks.put(subtask.getId(), subtask);
-
-            Epic epic = epics.get(epicId);
+            epic.addSubtask(subtask.getId());
+            updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
             epic.setStatus(calculateStatus(epic));
-            updatePrioritizedTasks(subtask, false); // добавляем задачу в TreeSet
+            updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
         }
     }
 
@@ -273,7 +284,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         Task task = tasks.get(id);
-        updatePrioritizedTasks(task, false); // удаляем задачу в TreeSet
+        updatePrioritizedTasksRemove(task); // удаляем задачу в TreeSet
         tasks.remove(id);
         historyManager.remove(id);
     }
@@ -305,7 +316,7 @@ public class InMemoryTaskManager implements TaskManager {
         int savedEpicId = subtask.getEpicId();
         Epic savedEpic = epics.get(savedEpicId);
 
-        updatePrioritizedTasks(subtask, false); // удаляем задачу в TreeSet
+        updatePrioritizedTasksRemove(subtask); // удаляем задачу в TreeSet
         subtasks.remove(id);
         historyManager.remove(id);
         savedEpic.deleteSubtask(id);
@@ -382,7 +393,6 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setDuration(epicDuration);
     }
 
-    @Override
     public boolean checkIntersectionTasks(Task task) {
         if (task.getStartTime() == null || task.getEndTime() == null) {
             System.out.println("Не задана длительность задачи по айди: " + task.getId());

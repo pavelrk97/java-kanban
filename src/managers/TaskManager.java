@@ -56,6 +56,4 @@ public interface TaskManager {
 
     // Получить приоритетную задачу
     List<Task> getPrioritizedTasks();
-
-    boolean checkIntersectionTasks(Task task);
 }

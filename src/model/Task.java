@@ -18,16 +18,11 @@ public class Task {
 
 
     public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.status = Status.NEW;
-        this.startTime = Instant.now();
+        this(name, description, Status.NEW, Instant.now());
     }
 
     public Task(String name, String description, Status status) {
-        this.name = name;
-        this.description = description;
-        this.status = status;
+        this(name, description, status, Instant.now());
     }
 
     public Task(String name, String description, Status status, int oldId) {
@@ -38,23 +33,15 @@ public class Task {
     }
 
     public Task(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+        this(id, name, description, Status.NEW, Instant.now(), null);
     }
 
     public Task(int id, String name, String description, Status status) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
+        this(id, name, description, status, Instant.now(), null);
     }
 
     public Task(String name, String description, Status status, Instant startTime) {
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.startTime = startTime;
+        this(name, description, status, startTime, null);
     }
 
     public Task(int id, String name, String description, Status status, Instant startTime, Duration duration) {

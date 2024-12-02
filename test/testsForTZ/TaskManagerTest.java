@@ -124,4 +124,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void crossIntervalsAfter() {}
+
+    @Test
+    public void crossIntervalsUpdTask() {}
+
+    @Test
+    public void crossIntervalsUpdSub() {}
 }

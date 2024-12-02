@@ -309,7 +309,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    public void crossIntervals() {
+    public void crossIntervals() {  // без пересечения сабтасок при создании
         // prepare
         taskManager.createEpic(new Epic("epic", "sdsd"));
         taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
@@ -325,7 +325,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    public void crossIntervalsBefore() {
+    public void crossIntervalsBefore() {  // пересечения сабтасок при создании
         // prepare
         taskManager.createEpic(new Epic("epic", "sdsd"));
         taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
@@ -341,7 +341,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    public void crossIntervalsAfter() {
+    public void crossIntervalsAfter() {  // пересечения сабтасок при создании
         // prepare
         taskManager.createEpic(new Epic("epic", "sdsd"));
         taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
@@ -353,6 +353,52 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         // check
         int currentNumber = taskManager.getAllSubtasks().size();
         Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+    }
+
+    @Override
+    @Test
+    public void crossIntervalsUpdSub() {  // пересечения сабтасок при обновлении
+        // prepare
+        taskManager.createEpic(new Epic("epic", "sdsd"));
+        taskManager.createSubtask(new Subtask("new sub1", "sub1", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100)));
+        taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(200)), Duration.ofMinutes(100)));
+        int numberIdealSubsInEpic = 1;
+
+        // do
+        System.out.println(taskManager.getAllSubtasks());
+        Subtask badSubT = new Subtask("new sub2222", "sub2", Status.NEW, 1,
+                Instant.parse("2024-11-30T12:00:00Z").minus(Duration.ofMinutes(50)), Duration.ofMinutes(100));
+        badSubT.setId(3);
+        taskManager.updateSubtask(badSubT);
+
+        // check
+        int currentNumber = taskManager.getAllSubtasks().size();
+        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+    }
+
+    @Override
+    @Test
+    public void crossIntervalsUpdTask() {
+        taskManager.createTask(new Task("new sub1", "sub1", Status.NEW,
+                Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100)));
+        taskManager.createTask(new Task("new sub2", "sub1", Status.NEW,
+                Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(10)), Duration.ofMinutes(100)));
+        taskManager.createTask(new Task("new sub3", "sub1", Status.NEW,
+                Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(1000)), Duration.ofMinutes(100)));
+        int numberIdealSubsInEpic = 1;
+
+        // do
+        Task newTask = new Task(2, "eweq", "qweeqw", Status.DONE);
+        newTask.setStartTime(Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(10)));
+        newTask.setDuration(Duration.ofMinutes(100));
+        taskManager.updateTask(newTask);
+
+        // check
+        int currentNumber = taskManager.getAllTasks().size();
+        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+
     }
 
 }
