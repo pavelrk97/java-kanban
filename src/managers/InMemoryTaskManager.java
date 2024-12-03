@@ -271,7 +271,6 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubtask(subtask.getId());
             updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
             epic.setStatus(calculateStatus(epic));
-            updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
         }
     }
 

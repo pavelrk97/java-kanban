@@ -367,7 +367,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         int numberIdealSubsInEpic = 1;
 
         // do
-        System.out.println(taskManager.getAllSubtasks());
         Subtask badSubT = new Subtask("new sub2222", "sub2", Status.NEW, 1,
                 Instant.parse("2024-11-30T12:00:00Z").minus(Duration.ofMinutes(50)), Duration.ofMinutes(100));
         badSubT.setId(3);
