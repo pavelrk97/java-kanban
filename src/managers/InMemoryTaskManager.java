@@ -211,9 +211,9 @@ public class InMemoryTaskManager implements TaskManager {
             task.setStatus(Status.NEW);
         }
 
-        updatePrioritizedTasksRemove(task);
-        deleteTaskById(task.getId());
         if (!checkIntersectionTasks(task)) {
+            updatePrioritizedTasksRemove(task);
+            deleteTaskById(task.getId());
             tasks.put(task.getId(), task);
             updatePrioritizedTasksAdd(task);
         } else {
@@ -263,14 +263,15 @@ public class InMemoryTaskManager implements TaskManager {
             subtask.setStatus(Status.NEW);
         }
 
-        updatePrioritizedTasksRemove(subtask);
-        deleteSubtaskById(subtask.getId());
-
         if (!checkIntersectionTasks(subtask)) {
+            updatePrioritizedTasksRemove(subtask);
+            deleteSubtaskById(subtask.getId());
             subtasks.put(subtask.getId(), subtask);
             epic.addSubtask(subtask.getId());
             updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
             epic.setStatus(calculateStatus(epic));
+        } else {
+            System.out.println("имеется пересечение задач по времени, задача не может быть выполнена");
         }
     }
 

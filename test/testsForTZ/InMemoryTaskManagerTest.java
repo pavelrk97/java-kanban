@@ -364,17 +364,17 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
                 Instant.parse("2024-11-30T12:00:00Z"), Duration.ofMinutes(100)));
         taskManager.createSubtask(new Subtask("new sub2", "sub2", Status.NEW, 1,
                 Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(200)), Duration.ofMinutes(100)));
-        int numberIdealSubsInEpic = 1;
+        Subtask subtaskOld = taskManager.getSubtaskById(3);
 
         // do
         Subtask badSubT = new Subtask("new sub2222", "sub2", Status.NEW, 1,
                 Instant.parse("2024-11-30T12:00:00Z").minus(Duration.ofMinutes(50)), Duration.ofMinutes(100));
         badSubT.setId(3);
         taskManager.updateSubtask(badSubT);
+        Subtask subtaskOldOld = taskManager.getSubtaskById(3);
 
         // check
-        int currentNumber = taskManager.getAllSubtasks().size();
-        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+        Assertions.assertEquals(subtaskOld, subtaskOldOld);
     }
 
     @Override
@@ -386,17 +386,17 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
                 Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(10)), Duration.ofMinutes(100)));
         taskManager.createTask(new Task("new sub3", "sub1", Status.NEW,
                 Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(1000)), Duration.ofMinutes(100)));
-        int numberIdealSubsInEpic = 1;
+        Task taskOld = taskManager.getTaskById(2);
 
         // do
         Task newTask = new Task(2, "eweq", "qweeqw", Status.DONE);
         newTask.setStartTime(Instant.parse("2024-11-30T12:00:00Z").plus(Duration.ofMinutes(10)));
         newTask.setDuration(Duration.ofMinutes(100));
         taskManager.updateTask(newTask);
+        Task taskOldOld = taskManager.getTaskById(2);
 
         // check
-        int currentNumber = taskManager.getAllTasks().size();
-        Assertions.assertEquals(numberIdealSubsInEpic, currentNumber);
+        Assertions.assertEquals(taskOld, taskOldOld);
 
     }
 
