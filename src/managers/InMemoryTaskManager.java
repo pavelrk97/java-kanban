@@ -211,12 +211,16 @@ public class InMemoryTaskManager implements TaskManager {
             task.setStatus(Status.NEW);
         }
 
+        Task saveTask = getTaskById(task.getId());
+        updatePrioritizedTasksRemove(task);
+        deleteTaskById(task.getId());
+
         if (!checkIntersectionTasks(task)) {
-            updatePrioritizedTasksRemove(task);
-            deleteTaskById(task.getId());
             tasks.put(task.getId(), task);
             updatePrioritizedTasksAdd(task);
         } else {
+            tasks.put(task.getId(), saveTask);
+            updatePrioritizedTasksAdd(saveTask);
             System.out.println("есть пересечения с другими задачами");
         }
     }
@@ -263,14 +267,20 @@ public class InMemoryTaskManager implements TaskManager {
             subtask.setStatus(Status.NEW);
         }
 
+        Subtask saveSubtask = getSubtaskById(subtask.getId());
+        updatePrioritizedTasksRemove(subtask);
+        deleteSubtaskById(saveSubtask.getId());
+
         if (!checkIntersectionTasks(subtask)) {
-            updatePrioritizedTasksRemove(subtask);
-            deleteSubtaskById(subtask.getId());
             subtasks.put(subtask.getId(), subtask);
             epic.addSubtask(subtask.getId());
             updatePrioritizedTasksAdd(subtask); // добавляем задачу в TreeSet
             epic.setStatus(calculateStatus(epic));
         } else {
+            subtasks.put(saveSubtask.getId(), saveSubtask);
+            epic.addSubtask(saveSubtask.getId());
+            updatePrioritizedTasksAdd(saveSubtask);
+            epic.setStatus(calculateStatus(epic));
             System.out.println("имеется пересечение задач по времени, задача не может быть выполнена");
         }
     }
