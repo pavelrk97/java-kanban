@@ -7,7 +7,8 @@ import model.Task;
 import status.Status;
 
 import java.io.*;
-
+import java.time.Duration;
+import java.time.Instant;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
@@ -21,7 +22,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public void save() {
         try (FileWriter writer = new FileWriter(file)) {
             // Заголовок файла
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,duration,startTime,epic\n");
 
             // Сохраняем все задачи
             for (Task task : getAllTasks()) {
@@ -42,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    protected static Task parseFromString(String value) {
+  protected static Task parseFromString(String value) {
         Task parsedTask;
         String[] parts = value.split(",");
         int id = Integer.parseInt(parts[0]);
@@ -50,23 +51,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         String name = parts[2];
         Status status = Status.valueOf(parts[3]);
         String description = parts[4];
-        switch (taskType) {
-            case TASK:
-                parsedTask = new Task(id, name, description, status);
-                break;
 
-            case EPIC:
-                parsedTask = new Epic(id, name, description, status);
-                break;
-
-            case SUBTASK:
-                int epicId = Integer.parseInt(parts[5]);
-                parsedTask = new Subtask(id, name, description, status, epicId);
-                break;
-            default:
-                throw new ExceptionsSaveManager("Неизвестный тип задачи: " + taskType);
-        }
-        return parsedTask;
+      if (taskType.equals(TaskType.SUBTASK)) {
+          Instant startTime = Instant.parse(parts[6]);
+          Long durationInMinutes = Long.valueOf(parts[5]);
+          Duration duration = Duration.ofMinutes(durationInMinutes);
+          int epicId = Integer.valueOf(parts[7]);
+          return new Subtask(id, name, description, status, epicId, startTime, duration);
+      } else if (taskType.equals(TaskType.TASK)) {
+          Instant startTime = Instant.parse(parts[6]);
+          Long durationInMinutes = Long.valueOf(parts[5]);
+          Duration duration = Duration.ofMinutes(durationInMinutes);
+          return new Task(id, name, description, status, startTime, duration);
+      } else {
+          return new Epic(id, name, description, status);
+      }
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {

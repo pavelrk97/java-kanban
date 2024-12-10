@@ -3,12 +3,14 @@ package model;
 import enums.TaskType;
 import status.Status;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Integer> subtasks = new ArrayList<>();
+    private Instant endTime;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -25,6 +27,10 @@ public class Epic extends Task {
 
     public Epic(int id, String name, String description, Status status) {
         super(id, name, description, status);
+    }
+
+    public Epic(String name, String description, Status status, Instant startTime) {
+        super(name, description, status, startTime);
     }
 
     public List<Integer> getSubtasks() {
@@ -47,6 +53,10 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
+    public void setEpicEndTime(Instant endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -58,7 +68,8 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s, %s", getId(), TaskType.EPIC, getName(), getStatus(), getDescription(), getSubtasks());
+        return String.format("%d,%s,%s,%s,%s, %s", getId(), TaskType.EPIC, getName(), getStatus(),
+                getDescription(), getSubtasks());
     }
 
     @Override
