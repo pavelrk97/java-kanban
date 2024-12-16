@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class SubtaskHandler extends TaskHandler {

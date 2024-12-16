@@ -11,7 +11,6 @@ import type.adapters.LocalDateTimeAdapter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class PrioritizedHandler extends BaseHttpHandler {
