@@ -139,6 +139,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             save();
         } catch (ManagerSaveException ex) {
+            ex.getMessage();
         }
     }
 
