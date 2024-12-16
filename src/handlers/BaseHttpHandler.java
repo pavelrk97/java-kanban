@@ -15,6 +15,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
             h.getResponseBody().write(resp);
             h.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -23,6 +24,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
             h.sendResponseHeaders(500, 0);
             h.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
