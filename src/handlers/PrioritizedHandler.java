@@ -45,6 +45,7 @@ public class PrioritizedHandler extends BaseHttpHandler {
             logger.log(Level.SEVERE, "error while handle prioritized request", e);
         }
     }
+
     protected String taskListSerialize(List<? extends Task> tasks) {
         return gson.toJson(tasks);
     }
