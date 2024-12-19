@@ -238,25 +238,6 @@ abstract class AbstractTaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteTaskShouldDeleteEpicSubtasks() {
-        // prepare
-        Epic epic = new Epic("epic_1", "epic_description_1", duration, time1);
-        Epic savedEpic = taskManager.addNewTask(epic);
-        Subtask subtask1 = new Subtask("subtask_1", "subtask_description_1", duration, time2, 0);
-        Subtask subtask2 = new Subtask("subtask_2", "subtask_description_2", duration, time3, 0);
-        Subtask subtask3 = new Subtask("subtask_3", "subtask_description_3", duration, time4, 0);
-        taskManager.addNewTask(subtask1);
-        taskManager.addNewTask(subtask2);
-        taskManager.addNewTask(subtask3);
-
-        // do
-        // check
-        assertNotNull(taskManager.getEpicSubtasks(savedEpic.getId()));
-        taskManager.deleteEpicSubtasks(savedEpic.getId());
-        assertTrue(taskManager.getEpicSubtasks(savedEpic.getId()).isEmpty());
-    }
-
-    @Test
     void deleteTaskShouldDeleteSubtaskWithSpecifiedId() {
         // prepare
         Epic epic = new Epic("epic_1", "epic_description_1", duration, time1);

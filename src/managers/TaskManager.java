@@ -50,6 +50,4 @@ public interface TaskManager {
 
     List<Subtask> getEpicSubtasks(Integer epicId);
 
-    void deleteEpicSubtasks(Integer epicId);
-
 }
