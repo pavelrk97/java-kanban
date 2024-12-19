@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TaskManager {
 
-    HistoryManager getHistoryManager();
+    List<Task> getHistory();
 
     Task addNewTask(Task newTask);
 
@@ -38,7 +38,7 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    List<Task> getAllSubtasks();
+    List<Task> getAllSubtasks() ;
 
     List<Task> getAllEpic();
 

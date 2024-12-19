@@ -6,7 +6,6 @@ import handlers.HistoryHandler;
 import handlers.PrioritizedHandler;
 import handlers.SubtaskHandler;
 import handlers.TaskHandler;
-import managers.HistoryManager;
 import managers.Managers;
 import managers.TaskManager;
 
@@ -18,13 +17,12 @@ public class HttpTaskServer {
     private final HttpServer httpServer;
 
     public HttpTaskServer(TaskManager manager) throws IOException {
-        HistoryManager historyManager = manager.getHistoryManager();
 
         httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler(manager));
         httpServer.createContext("/subtasks", new SubtaskHandler(manager));
         httpServer.createContext("/epics", new EpicHandler(manager));
-        httpServer.createContext("/history", new HistoryHandler(historyManager));
+        httpServer.createContext("/history", new HistoryHandler(manager));
         httpServer.createContext("/prioritized", new PrioritizedHandler(manager));
     }
 

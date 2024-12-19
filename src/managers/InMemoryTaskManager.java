@@ -33,9 +33,11 @@ public class InMemoryTaskManager implements TaskManager {
         return taskId++;
     }
 
-    public HistoryManager getHistoryManager() {
-        return historyManager;
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
+
 
     protected boolean checkIntersection(Task task1, Task task2) {
         LocalDateTime startTime1 = task1.getStartTime();

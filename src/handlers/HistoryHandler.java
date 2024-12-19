@@ -3,7 +3,7 @@ package handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import managers.HistoryManager;
+import managers.TaskManager;
 import tasks.Task;
 import type.adapters.DurationAdapter;
 import type.adapters.LocalDateTimeAdapter;
@@ -16,14 +16,14 @@ import java.util.regex.Pattern;
 
 public class HistoryHandler extends BaseHttpHandler {
 
-    protected final HistoryManager manager;
+    protected final TaskManager manager;
     protected final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
-    public HistoryHandler(HistoryManager manager) {
+    public HistoryHandler(TaskManager manager) {
         this.manager = manager;
     }
 
