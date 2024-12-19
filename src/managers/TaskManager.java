@@ -38,7 +38,7 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    List<Task> getAllSubtasks() ;
+    List<Task> getAllSubtasks();
 
     List<Task> getAllEpic();
 
