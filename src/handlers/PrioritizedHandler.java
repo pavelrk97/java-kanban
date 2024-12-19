@@ -11,6 +11,7 @@ import type.adapters.LocalDateTimeAdapter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class PrioritizedHandler extends BaseHttpHandler {
@@ -28,7 +29,7 @@ public class PrioritizedHandler extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange h) {
-        try {
+        try (h) {
             String requestMethod = h.getRequestMethod();
             String requestPath = h.getRequestURI().getPath();
 
@@ -41,10 +42,9 @@ public class PrioritizedHandler extends BaseHttpHandler {
                 }
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while handle prioritized request", e);
         }
     }
-
     protected String taskListSerialize(List<? extends Task> tasks) {
         return gson.toJson(tasks);
     }

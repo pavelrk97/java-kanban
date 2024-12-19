@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class TaskHandler extends BaseHttpHandler {
@@ -31,7 +32,7 @@ public class TaskHandler extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange h) {
-        try {
+        try (h) {
             String requestMethod = h.getRequestMethod();
             String requestPath = h.getRequestURI().getPath();
             String body = new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
@@ -67,12 +68,12 @@ public class TaskHandler extends BaseHttpHandler {
             }
 
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while handle task request", e);
         }
     }
 
     private void addTask(HttpExchange h, String body) {
-        try {
+        try (h) {
             Task addedTask = manager.addNewTask(gson.fromJson(body, Task.class));
             if (Objects.nonNull(addedTask)) {
                 sendText(h, taskSerialize(addedTask), 201);
@@ -80,7 +81,7 @@ public class TaskHandler extends BaseHttpHandler {
                 sendText(h, "Task time overlaps with existing tasks", 406);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing task", e);
         }
     }
 
@@ -93,7 +94,7 @@ public class TaskHandler extends BaseHttpHandler {
                 sendText(h, "Task time overlaps with existing tasks", 406);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing task", e);
         }
     }
 
@@ -106,7 +107,7 @@ public class TaskHandler extends BaseHttpHandler {
                 sendText(h, taskSerialize(task), 200);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing task", e);
         }
     }
 
@@ -121,7 +122,7 @@ public class TaskHandler extends BaseHttpHandler {
                 sendText(h, "Task with id " + taskId + " does not exist", 404);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing task", e);
         }
     }
 

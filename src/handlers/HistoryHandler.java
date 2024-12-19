@@ -11,6 +11,7 @@ import type.adapters.LocalDateTimeAdapter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class HistoryHandler extends BaseHttpHandler {
@@ -28,7 +29,7 @@ public class HistoryHandler extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange h) {
-        try {
+        try (h) {
             String requestMethod = h.getRequestMethod();
             String requestPath = h.getRequestURI().getPath();
 
@@ -41,7 +42,7 @@ public class HistoryHandler extends BaseHttpHandler {
                 }
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while handle history request", e);
         }
     }
 

@@ -488,7 +488,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
     public List<Subtask> getEpicSubtasks(Integer epicId) {
         Epic epicInMap;
         ArrayList<Subtask> subtasks = new ArrayList<>();
@@ -508,7 +507,6 @@ public class InMemoryTaskManager implements TaskManager {
         return subtasks;
     }
 
-    @Override
     public void deleteEpicSubtasks(Integer epicId) {
         Epic epicInMap;
 

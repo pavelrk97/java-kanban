@@ -20,6 +20,18 @@ public class DurationAdapter extends TypeAdapter<Duration> {
 
     @Override
     public Duration read(JsonReader jsonReader) throws IOException {
-        return Duration.parse(jsonReader.nextString());
+        String durationString = jsonReader.nextString();
+
+        if (durationString == null || durationString.trim().isEmpty()) {
+            // Вернем null, если строка пуста или null
+            return null;
+        }
+
+        try {
+            return Duration.parse(durationString); // Преобразуем строку в Duration
+        } catch (Exception e) {
+            // Логируем ошибку и выбрасываем исключение, если строка не может быть преобразована в Duration
+            throw new IOException("Invalid duration format: " + durationString, e);
+        }
     }
 }

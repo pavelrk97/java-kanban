@@ -3,8 +3,11 @@ package managers;
 import tasks.Task;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InMemoryHistoryManager implements HistoryManager {
+    private static final Logger logger = Logger.getLogger(HistoryManager.class.getName());
     private final Map<Integer, Node> historyMap = new HashMap<>();
     private int lastId = 0;
 
@@ -29,7 +32,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node removingNode = historyMap.remove(id);
             removeNode(removingNode);
         } else {
-            System.out.println("History map not contains task with current id");
+            logger.log(Level.WARNING, "History map not contains task with current id");
         }
     }
 
@@ -38,7 +41,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         final Node nextNode = node.next;
 
         if (prevNode == null && nextNode == null) {
-            System.out.println("Node is only one");
+            logger.log(Level.INFO, "Node is only one");
             return;
         }
 
@@ -46,18 +49,18 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (prevNode == null) {
             nextNode.prev = null;
             head = nextNode;
-            System.out.println("Head node links removed");
+            logger.log(Level.INFO,"Head node links removed");
 
             // is tail
         } else if (nextNode == null) {
             prevNode.next = null;
             tail = prevNode;
-            System.out.println("Tail node links removed");
+            logger.log(Level.INFO,"Tail node links removed");
 
         } else {
             prevNode.next = nextNode;
             nextNode.prev = prevNode;
-            System.out.println("Node links removed");
+            logger.log(Level.INFO,"Node links removed");
 
         }
     }
@@ -70,7 +73,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node tempNode;
 
         if (head == null) {
-            System.out.println("History is empty");
+
+            logger.log(Level.INFO, "History is empty");
             return result;
 
         } else if (tail == null) {
@@ -100,16 +104,16 @@ public class InMemoryHistoryManager implements HistoryManager {
 
             if (!historyMap.containsKey(task.getId())) {
                 linkLast(copyTask);
-                System.out.println("Added new task in history with id = " + task.getId());
+                logger.log(Level.INFO,"Added new task in history with id = " + task.getId());
 
             } else {
                 remove(task.getId());
                 linkLast(copyTask);
-                System.out.println("Refresh old task with id = " + task.getId());
+                logger.log(Level.INFO,"Refresh old task with id = " + task.getId());
             }
 
         } else {
-            System.out.println("Task is null ");
+            logger.log(Level.INFO,"Task is null ");
         }
     }
 

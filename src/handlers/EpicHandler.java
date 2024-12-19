@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class EpicHandler extends TaskHandler {
@@ -27,9 +28,11 @@ public class EpicHandler extends TaskHandler {
         super(manager);
     }
 
+    String errorMsgForEpic = "error while doing epic";
+
     @Override
     public void handle(HttpExchange h) {
-        try {
+        try (h) {
             String requestMethod = h.getRequestMethod();
             String requestPath = h.getRequestURI().getPath();
             String body = new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
@@ -63,10 +66,8 @@ public class EpicHandler extends TaskHandler {
             } else if (Pattern.matches("/epics/\\d+/subtasks", requestPath)
                     || Pattern.matches("/epics/\\d+/subtasks/", requestPath)) {
                 Optional<Integer> id = getId(requestPath);
-                if (id.isPresent()) {
-                    if ("GET".equals(requestMethod)) {
-                        getEpicSubtasks(h, id.get());
-                    }
+                if (id.isPresent() && "GET".equals(requestMethod)) {
+                    getEpicSubtasks(h, id.get());
                 }
 
             } else {
@@ -74,12 +75,12 @@ public class EpicHandler extends TaskHandler {
             }
 
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while handle epic request", e);
         }
     }
 
     private void addEpic(HttpExchange h, String body) {
-        try {
+        try (h) {
             Epic addedEpic = manager.addNewTask(gson.fromJson(body, Epic.class));
             if (Objects.nonNull(addedEpic)) {
                 sendText(h, epicSerialize(addedEpic), 201);
@@ -87,12 +88,12 @@ public class EpicHandler extends TaskHandler {
                 sendText(h, "Epic is null", 404);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing epic", e);
         }
     }
 
     private void updateEpic(HttpExchange h, String body) {
-        try {
+        try (h) {
             Epic updatedEpic = manager.updateTask(gson.fromJson(body, Epic.class));
             if (Objects.nonNull(updatedEpic)) {
                 sendText(h, epicSerialize(updatedEpic), 201);
@@ -100,12 +101,12 @@ public class EpicHandler extends TaskHandler {
                 sendText(h, "Epic id does not exist", 404);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, "error while doing epic", e);
         }
     }
 
     private void getEpic(HttpExchange h, Integer epicId) {
-        try {
+        try (h) {
             Epic epic = manager.getEpic(epicId);
             if (Objects.isNull(epic)) {
                 sendText(h, "Epic with id " + epicId + " is not exist", 404);
@@ -113,12 +114,12 @@ public class EpicHandler extends TaskHandler {
                 sendText(h, epicSerialize(epic), 200);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, errorMsgForEpic, e);
         }
     }
 
     private void getEpicSubtasks(HttpExchange h, Integer epicId) {
-        try {
+        try (h) {
             Epic epic = manager.getEpic(epicId);
             if (Objects.isNull(epic)) {
                 sendText(h, "Epic with id " + epicId + " does not exist", 404);
@@ -126,12 +127,12 @@ public class EpicHandler extends TaskHandler {
                 sendText(h, subtaskListSerialize(manager.getEpicSubtasks(epicId)), 200);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, errorMsgForEpic, e);
         }
     }
 
     private void deleteEpic(HttpExchange h, Integer epicId) {
-        try {
+        try (h) {
             Epic delEpic = manager.deleteEpic(epicId);
             if (Objects.nonNull(delEpic)) {
                 String response = "Successful remove epic: " + "id: "
@@ -141,7 +142,7 @@ public class EpicHandler extends TaskHandler {
                 sendText(h, "Task with id " + epicId + " does not exist", 404);
             }
         } catch (Exception e) {
-            sendInternalError(h);
+            logger.log(Level.SEVERE, errorMsgForEpic, e);
         }
     }
 

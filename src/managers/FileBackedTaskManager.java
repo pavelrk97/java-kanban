@@ -17,8 +17,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+
+    protected static final Logger logger = Logger.getLogger(FileBackedTaskManager.class.getName());
 
     private final File file;
 
@@ -84,17 +88,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             default -> TaskStatus.NEW;
         };
 
-        switch (temp[1]) {
-            case "TASK":
-                return new Task(id, name, description, status, duration, startTime);
-            case "SUBTASK":
+        return switch (temp[1]) {
+            case "TASK" -> new Task(id, name, description, status, duration, startTime);
+            case "SUBTASK" -> {
                 int epicId = Integer.parseInt(temp[7]);
-                return new Subtask(id, name, description, status, duration, startTime, epicId);
-            case "EPIC":
-                return new Epic(id, name, description, status, duration, startTime);
-            default:
-                return null;
-        }
+                yield new Subtask(id, name, description, status, duration, startTime, epicId);
+            }
+            case "EPIC" -> new Epic(id, name, description, status, duration, startTime);
+            default -> null;
+        };
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
@@ -139,7 +141,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             save();
         } catch (ManagerSaveException ex) {
-            ex.getMessage();
+            logger.log(Level.SEVERE, "Failed to save task manager state", ex);
         }
     }
 
